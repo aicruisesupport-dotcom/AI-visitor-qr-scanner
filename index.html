@@ -441,8 +441,24 @@ async function onScanSuccess(decodedText){
    * อ่าน return URL
    */
 
-  const returnUrl =
-    getReturnUrl();
+  const returnUrl = getReturnUrl();
+
+if (!returnUrl) {
+  showError("ไม่พบลิงก์กลับหน้าของ รปภ.");
+  processing = false;
+  return;
+}
+
+const separator =
+  returnUrl.includes("?") ? "&" : "?";
+
+const finalUrl =
+  returnUrl +
+  separator +
+  "visitorCode=" +
+  encodeURIComponent(code);
+
+window.location.href = finalUrl;
 
 
   /*
