@@ -1,16 +1,28 @@
+```html
 <!DOCTYPE html>
-
 <html lang="th">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<title>ระบบ รปภ. Visitor Check</title>
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0">
 
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<title>QR Visitor Scanner</title>
+
+<script
+  src="https://unpkg.com/html5-qrcode"
+  type="text/javascript">
+</script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -55,9 +67,9 @@ body{
 
 .scan-title{
   text-align:center;
-  font-size:20px;
+  font-size:21px;
   font-weight:bold;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 
 #reader{
@@ -65,6 +77,7 @@ body{
   overflow:hidden;
   border-radius:14px;
   background:#111;
+  min-height:50px;
 }
 
 #reader video{
@@ -78,12 +91,17 @@ body{
   display:none!important;
 }
 
+#reader__camera_selection{
+  display:none!important;
+}
+
 .scan-status{
   text-align:center;
-  margin-top:10px;
+  margin-top:12px;
   color:#555;
-  font-size:14px;
+  font-size:16px;
   white-space:pre-line;
+  line-height:1.5;
 }
 
 button{
@@ -98,394 +116,208 @@ button{
   color:#fff;
 }
 
-button:disabled{
-  background:#bbb!important;
+.scan-btn{
+  background:#0b57d0;
 }
 
-.scan-btn{background:#0b57d0}
-.stop-btn{background:#555}
-.check-btn{background:#f57c00}
-.entry-btn{background:#16803c}
-.exit-btn{background:#d93025}
-.search-btn{background:#37474f}
-.cancel-btn{background:#777}
+.stop-btn{
+  background:#555;
+}
+
+.back-btn{
+  background:#37474f;
+}
+
+button:disabled{
+  background:#aaa;
+  cursor:not-allowed;
+}
 
 .hidden{
   display:none!important;
-}
-
-input{
-  width:100%;
-  padding:16px;
-  border:1px solid #ccc;
-  border-radius:13px;
-  font-size:20px;
-  text-align:center;
-  margin-top:8px;
-  text-transform:uppercase;
-}
-
-.result{
-  display:none;
-}
-
-.visitor-name{
-  text-align:center;
-  font-size:25px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-
-.status{
-  text-align:center;
-  padding:12px;
-  border-radius:12px;
-  font-size:19px;
-  font-weight:bold;
-  margin-bottom:15px;
-  background:#eee;
-}
-
-.item{
-  padding:9px 0;
-  border-bottom:1px solid #eee;
-  font-size:17px;
-}
-
-.item:last-child{
-  border-bottom:0;
-}
-
-.label{
-  font-weight:bold;
-}
-
-.actions{
-  margin-top:15px;
-}
-
-.error{
-  display:none;
-  background:#ffebee;
-  color:#c62828;
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
-  text-align:center;
-  white-space:pre-line;
 }
 
 .success{
   display:none;
   background:#e8f5e9;
   color:#1b5e20;
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
   text-align:center;
   font-weight:bold;
+  white-space:pre-line;
 }
 
-.modal{
+.error{
   display:none;
-  position:fixed;
-  z-index:9999;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.modal-box{
-  background:#fff;
-  width:100%;
-  max-width:400px;
-  padding:25px;
-  border-radius:20px;
+  background:#ffebee;
+  color:#c62828;
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
   text-align:center;
+  font-weight:bold;
+  white-space:pre-line;
 }
 
-.modal-icon{
-  font-size:55px;
-}
-
-.modal-box h2{
-  margin:10px 0;
+.code{
+  margin-top:12px;
+  padding:14px;
+  background:#f5f5f5;
+  border-radius:12px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  word-break:break-all;
 }
 
 .hint{
   text-align:center;
   color:#777;
   font-size:13px;
-  margin-top:8px;
+  margin-top:10px;
 }
+
 </style>
 
 </head>
+
 
 <body>
 
 <div class="container">
 
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
 <div class="header">
-<h1>🛡️ ระบบ รปภ.</h1>
-<p>Visitor Check - Cruise Terminal</p>
+
+  <h1>📷 QR Visitor Scanner</h1>
+
+  <p>
+    ระบบสแกน Visitor สำหรับ รปภ.
+  </p>
+
 </div>
 
-<!-- ========================= -->
 
-<!-- SCANNER -->
-
-<!-- ========================= -->
+<!-- ==================================================
+     SCANNER
+================================================== -->
 
 <div class="card">
 
-<div class="scan-title">
-📷 สแกน QR Visitor
+  <div class="scan-title">
+    📷 สแกน QR Visitor
+  </div>
+
+
+  <div id="reader"></div>
+
+
+  <div
+    id="scanStatus"
+    class="scan-status">
+
+    กดปุ่มด้านล่างเพื่อเปิดกล้อง
+
+  </div>
+
+
+  <button
+    id="startScanBtn"
+    class="scan-btn"
+    onclick="startScanner()">
+
+    📷 เปิดกล้อง
+
+  </button>
+
+
+  <button
+    id="stopScanBtn"
+    class="stop-btn hidden"
+    onclick="stopScanner()">
+
+    ⏹ ปิดกล้อง
+
+  </button>
+
+
+  <div
+    id="successBox"
+    class="success">
+  </div>
+
+
+  <div
+    id="errorBox"
+    class="error">
+  </div>
+
+
 </div>
 
-<div id="reader"></div>
 
-<div id="scanStatus" class="scan-status">
-กดปุ่มด้านล่างเพื่อเปิดกล้อง
+<!-- ==================================================
+     RESULT
+================================================== -->
+
+<div
+  id="resultCard"
+  class="card hidden">
+
+  <div style="
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+  ">
+
+    Visitor Code
+
+  </div>
+
+
+  <div
+    id="resultCode"
+    class="code">
+    -
+  </div>
+
+
+  <button
+    class="scan-btn"
+    onclick="sendBackToSecurity()">
+
+    ✅ กลับหน้า รปภ.
+
+  </button>
+
+
+  <button
+    class="back-btn"
+    onclick="scanAgain()">
+
+    📷 สแกนใหม่
+
+  </button>
+
 </div>
 
-<button
-id="startScanBtn"
-class="scan-btn"
-onclick="startScanner()">
-📷 เปิดกล้องสแกน QR </button>
-
-<button
-id="stopScanBtn"
-class="stop-btn hidden"
-onclick="stopScanner()">
-⏹ ปิดกล้อง </button>
-
-</div>
-
-<!-- ========================= -->
-
-<!-- MANUAL -->
-
-<!-- ========================= -->
-
-<div class="card">
-
-<div style="font-weight:bold;font-size:18px;">
-หรือกรอก Visitor Code
-</div>
-
-<input
-type="text"
-id="visitorCode"
-placeholder="เช่น CR-260915-0001"
-autocomplete="off">
-
-<button
-class="search-btn"
-onclick="searchVisitor()">
-🔍 ค้นหาผู้มาติดต่อ </button>
 
 <div class="hint">
-สามารถใช้ได้กรณีกล้องไม่พร้อมใช้งาน
-</div>
+
+  เมื่อสแกนสำเร็จ ระบบจะส่ง Visitor Code
+  กลับไปยังหน้า รปภ. โดยอัตโนมัติ
 
 </div>
 
-<!-- ========================= -->
-
-<!-- RESULT -->
-
-<!-- ========================= -->
-
-<div id="resultCard" class="card result">
-
-<div id="visitorName" class="visitor-name">-</div>
-
-<div id="status" class="status">-</div>
-
-<div class="item">
-<span class="label">Visitor Code:</span>
-<span id="displayCode">-</span>
-</div>
-
-<div class="item">
-<span class="label">เลขบัตรประชาชน:</span>
-<span id="idNumber">-</span>
-</div>
-
-<div class="item">
-<span class="label">โทรศัพท์:</span>
-<span id="phone">-</span>
-</div>
-
-<div class="item">
-<span class="label">บริษัท:</span>
-<span id="company">-</span>
-</div>
-
-<div class="item">
-<span class="label">รถ:</span>
-<span id="vehicle">-</span>
-</div>
-
-<div class="item">
-<span class="label">วัตถุประสงค์:</span>
-<span id="purpose">-</span>
-</div>
-
-<div class="item">
-<span class="label">เรือ / Cruise:</span>
-<span id="cruise">-</span>
-</div>
-
-<div class="item">
-<span class="label">จำนวนผู้โดยสาร:</span>
-<span id="passengers">-</span>
-</div>
-
-<div class="item">
-<span class="label">วันที่เข้าพื้นที่:</span>
-<span id="visitDate">-</span>
-</div>
-
-<div class="actions">
-
-<!-- ขั้นตรวจสอบ -->
-
-<button
-id="checkBtn"
-class="check-btn"
-onclick="openCheckConfirm()">
-🔎 ตรวจสอบข้อมูล </button>
-
-<!-- ขั้นอนุญาต -->
-
-<button
-id="entryBtn"
-class="entry-btn hidden"
-onclick="openEntryConfirm()">
-🟢 ยืนยันอนุญาติเข้าพื้นที่ </button>
-
-<!-- ออกภายหลัง -->
-
-<button
-id="exitBtn"
-class="exit-btn hidden"
-onclick="openExitConfirm()">
-🔴 อนุญาตให้ออกพื้นที่ </button>
 
 </div>
 
-</div>
-
-<div id="errorBox" class="error"></div>
-
-<div id="successBox" class="success"></div>
-
-</div>
-
-<!-- ========================= -->
-
-<!-- CHECK MODAL -->
-
-<!-- ========================= -->
-
-<div id="checkModal" class="modal">
-
-<div class="modal-box">
-
-<div class="modal-icon">🔎</div>
-
-<h2>ตรวจสอบ Visitor</h2>
-
-<p>
-กรุณาตรวจสอบข้อมูล Visitor<br>
-ก่อนอนุญาติเข้าพื้นที่
-</p>
-
-<button
-class="check-btn"
-onclick="confirmCheckAction()">
-✅ ตรวจสอบแล้ว </button>
-
-<button
-class="cancel-btn"
-onclick="closeCheckConfirm()">
-ยกเลิก </button>
-
-</div>
-
-</div>
-
-<!-- ========================= -->
-
-<!-- ENTRY MODAL -->
-
-<!-- ========================= -->
-
-<div id="entryModal" class="modal">
-
-<div class="modal-box">
-
-<div class="modal-icon">🟢</div>
-
-<h2>ยืนยันอนุญาติเข้าพื้นที่</h2>
-
-<p>
-ตรวจสอบข้อมูลเรียบร้อยแล้ว<br>
-ต้องการอนุญาตให้ Visitor<br>
-<strong>เข้าพื้นที่</strong> ใช่หรือไม่?
-</p>
-
-<button
-class="entry-btn"
-onclick="confirmEntryAction()">
-🟢 ยืนยันเข้า </button>
-
-<button
-class="cancel-btn"
-onclick="closeEntryConfirm()">
-ยกเลิก </button>
-
-</div>
-
-</div>
-
-<!-- ========================= -->
-
-<!-- EXIT MODAL -->
-
-<!-- ========================= -->
-
-<div id="exitModal" class="modal">
-
-<div class="modal-box">
-
-<div class="modal-icon">🔴</div>
-
-<h2>ยืนยันออกพื้นที่</h2>
-
-<p>
-ต้องการบันทึก Visitor รายนี้<br>
-<strong>ออกจากพื้นที่</strong> ใช่หรือไม่?
-</p>
-
-<button
-class="exit-btn"
-onclick="confirmExitAction()">
-🔴 ยืนยันออก </button>
-
-<button
-class="cancel-btn"
-onclick="closeExitConfirm()">
-ยกเลิก </button>
-
-</div>
-
-</div>
 
 <script>
 
@@ -494,10 +326,12 @@ GLOBAL
 ====================================================== */
 
 let html5QrCode = null;
+
 let scannerRunning = false;
+
 let qrProcessing = false;
-let currentVisitor = null;
-let checkedVisitor = false;
+
+let scannedCode = "";
 
 
 /* ======================================================
@@ -506,287 +340,473 @@ START SCANNER
 
 async function startScanner(){
 
-if(scannerRunning)return;
+  if(scannerRunning){
+    return;
+  }
 
-hideMessages();
 
-const status=document.getElementById("scanStatus");
+  hideMessages();
 
-status.innerText="กำลังเปิดกล้อง...";
 
-try{
+  const status =
+    document.getElementById("scanStatus");
 
-if(
-!navigator.mediaDevices ||
-!navigator.mediaDevices.getUserMedia
-){
 
-throw new Error("CAMERA_NOT_SUPPORTED");
+  status.innerText =
+    "กำลังขออนุญาตใช้กล้อง...";
 
-}
 
-/*
-ขอ permission จาก browser
-*/
+  try{
 
-const stream=
-await navigator.mediaDevices.getUserMedia({
 
-video:{
-facingMode:{
-ideal:"environment"
-}
-},
+    /* -----------------------------------------------
+       ตรวจสอบ Browser
+    ------------------------------------------------ */
 
-audio:false
+    if(
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ){
 
-});
+      throw new Error(
+        "CAMERA_NOT_SUPPORTED"
+      );
 
-/*
-ได้ permission แล้ว
-*/
+    }
 
-stream.getTracks().forEach(function(track){
-track.stop();
-});
 
-/*
-สร้าง scanner
-*/
+    /* -----------------------------------------------
+       ขอ Permission กล้อง
+    ------------------------------------------------ */
 
-if(html5QrCode){
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
 
-try{
-await html5QrCode.stop();
-}catch(e){}
+        video:{
+          facingMode:{
+            ideal:"environment"
+          }
+        },
 
-try{
-html5QrCode.clear();
-}catch(e){}
+        audio:false
 
-}
+      });
 
-html5QrCode=
-new Html5Qrcode("reader");
 
-/*
-ใช้ cameraId ที่ browser ให้มา
-เพื่อป้องกันปัญหา exact environment
-*/
+    /* -----------------------------------------------
+       ได้ Permission แล้ว
+       ปิด stream ทดสอบ
+    ------------------------------------------------ */
 
-const cameras=
-await Html5Qrcode.getCameras();
+    stream
+      .getTracks()
+      .forEach(function(track){
 
-if(!cameras || cameras.length===0){
+        track.stop();
 
-throw new Error("NO_CAMERA");
+      });
 
-}
 
-let cameraId=
-cameras[cameras.length-1].id;
+    status.innerText =
+      "กำลังเตรียมกล้อง...";
 
-/*
-เลือกกล้องหลังถ้าหาได้
-*/
 
-for(const camera of cameras){
+    /* -----------------------------------------------
+       ล้าง Scanner เก่า
+    ------------------------------------------------ */
 
-const label=
-(camera.label||"").toLowerCase();
+    if(html5QrCode){
 
-if(
-label.includes("back") ||
-label.includes("rear") ||
-label.includes("environment") ||
-label.includes("หลัง")
-){
+      try{
+        await html5QrCode.stop();
+      }catch(e){}
 
-cameraId=camera.id;
-break;
+      try{
+        html5QrCode.clear();
+      }catch(e){}
 
-}
+      html5QrCode = null;
 
-}
+    }
 
-const config={
 
-fps:10,
+    /* -----------------------------------------------
+       สร้าง Scanner
+    ------------------------------------------------ */
 
-qrbox:function(width,height){
+    html5QrCode =
+      new Html5Qrcode("reader");
 
-const size=
-Math.floor(
-Math.min(width,height)*0.70
-);
 
-return{
-width:size,
-height:size
-};
+    /* -----------------------------------------------
+       หารายการกล้อง
+    ------------------------------------------------ */
 
-},
+    const cameras =
+      await Html5Qrcode.getCameras();
 
-aspectRatio:1.0,
 
-disableFlip:false
+    if(
+      !cameras ||
+      cameras.length === 0
+    ){
 
-};
+      throw new Error(
+        "NO_CAMERA"
+      );
 
-await html5QrCode.start(
+    }
 
-cameraId,
 
-config,
+    /* -----------------------------------------------
+       เลือกกล้อง
+    ------------------------------------------------ */
 
-onQrScanned,
+    let cameraId =
+      cameras[0].id;
 
-function(errorMessage){}
 
-);
+    for(
+      const camera of cameras
+    ){
 
-scannerRunning=true;
-qrProcessing=false;
+      const label =
+        String(
+          camera.label || ""
+        ).toLowerCase();
 
-status.innerText=
-"📷 กำลังสแกน QR...\n\n"+
-"นำ QR Visitor ให้อยู่ในกรอบ";
 
-document
-.getElementById("startScanBtn")
-.classList.add("hidden");
+      if(
+        label.includes("back") ||
+        label.includes("rear") ||
+        label.includes("environment") ||
+        label.includes("หลัง")
+      ){
 
-document
-.getElementById("stopScanBtn")
-.classList.remove("hidden");
+        cameraId =
+          camera.id;
 
-}
-catch(error){
+        break;
 
-console.error("Camera error",error);
+      }
 
-scannerRunning=false;
+    }
 
-if(html5QrCode){
 
-try{
-await html5QrCode.stop();
-}catch(e){}
+    /* -----------------------------------------------
+       Scanner Config
+    ------------------------------------------------ */
 
-try{
-html5QrCode.clear();
-}catch(e){}
+    const config = {
 
-html5QrCode=null;
+      fps:10,
 
-}
+      qrbox:function(
+        width,
+        height
+      ){
 
-document
-.getElementById("startScanBtn")
-.classList.remove("hidden");
+        const size =
+          Math.floor(
+            Math.min(
+              width,
+              height
+            ) * 0.70
+          );
 
-document
-.getElementById("stopScanBtn")
-.classList.add("hidden");
 
-let message=
-"❌ ไม่สามารถเปิดกล้องได้";
+        return{
 
-if(
-error.name==="NotAllowedError" ||
-error.name==="PermissionDeniedError"
-){
+          width:size,
 
-message=
-"❌ ไม่ได้รับอนุญาตให้ใช้กล้อง\n\n"+
-"กรุณาอนุญาตการใช้กล้องใน Browser\n"+
-"แล้วลองเปิดกล้องอีกครั้ง";
+          height:size
 
-}
+        };
 
-else if(
-error.name==="NotFoundError" ||
-error.name==="NO_CAMERA"
-){
+      },
 
-message=
-"❌ ไม่พบกล้องในอุปกรณ์นี้";
+      aspectRatio:1.0,
 
-}
+      disableFlip:false
 
-else if(
-error.name==="NotReadableError"
-){
+    };
 
-message=
-"❌ กล้องกำลังถูกใช้งานโดยแอปอื่น";
 
-}
+    /* -----------------------------------------------
+       เปิดกล้อง
+    ------------------------------------------------ */
 
-else if(
-error.name==="SecurityError"
-){
+    await html5QrCode.start(
 
-message=
-"❌ Browser ไม่อนุญาตให้เว็บไซต์ใช้กล้อง\n\n"+
-"กรุณาตรวจสอบ HTTPS และสิทธิ์ Camera";
+      cameraId,
 
-}
+      config,
 
-showError(message);
+      onQrScanned,
 
-status.innerText=
-"ไม่สามารถเปิดกล้องได้";
+      function(errorMessage){
 
-}
+        /*
+         * ไม่ต้องแสดง error ทุก frame
+         */
+
+      }
+
+    );
+
+
+    /* -----------------------------------------------
+       สำเร็จ
+    ------------------------------------------------ */
+
+    scannerRunning = true;
+
+    qrProcessing = false;
+
+
+    status.innerText =
+      "📷 กำลังสแกน QR...\n\n" +
+      "นำ QR Visitor ให้อยู่ในกรอบ";
+
+
+    document
+      .getElementById(
+        "startScanBtn"
+      )
+      .classList.add("hidden");
+
+
+    document
+      .getElementById(
+        "stopScanBtn"
+      )
+      .classList.remove("hidden");
+
+
+  }
+
+  catch(error){
+
+    console.error(
+      "Camera error:",
+      error
+    );
+
+
+    scannerRunning = false;
+
+
+    /* -----------------------------------------------
+       Cleanup
+    ------------------------------------------------ */
+
+    if(html5QrCode){
+
+      try{
+        await html5QrCode.stop();
+      }catch(e){}
+
+      try{
+        html5QrCode.clear();
+      }catch(e){}
+
+      html5QrCode = null;
+
+    }
+
+
+    document
+      .getElementById(
+        "startScanBtn"
+      )
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById(
+        "stopScanBtn"
+      )
+      .classList.add("hidden");
+
+
+    let message =
+      "❌ ไม่สามารถเปิดกล้องได้";
+
+
+    if(
+      error &&
+      (
+        error.name ===
+        "NotAllowedError" ||
+
+        error.name ===
+        "PermissionDeniedError"
+      )
+    ){
+
+      message =
+        "❌ ไม่ได้รับอนุญาตให้ใช้กล้อง\n\n" +
+        "กรุณาอนุญาต Camera ใน Browser";
+
+    }
+
+
+    else if(
+      error &&
+      (
+        error.name ===
+        "NotFoundError" ||
+
+        error.message ===
+        "NO_CAMERA"
+      )
+    ){
+
+      message =
+        "❌ ไม่พบกล้องในอุปกรณ์นี้";
+
+    }
+
+
+    else if(
+      error &&
+      error.name ===
+      "NotReadableError"
+    ){
+
+      message =
+        "❌ กล้องกำลังถูกใช้งานโดยแอปอื่น";
+
+    }
+
+
+    else if(
+      error &&
+      error.name ===
+      "SecurityError"
+    ){
+
+      message =
+        "❌ Browser ไม่อนุญาตให้เว็บไซต์ใช้กล้อง\n\n" +
+        "กรุณาตรวจสอบ HTTPS";
+
+    }
+
+
+    showError(message);
+
+
+    status.innerText =
+      "ไม่สามารถเปิดกล้องได้";
+
+  }
 
 }
 
 
 /* ======================================================
-SCAN SUCCESS
+QR SCANNED
 ====================================================== */
 
-async function onQrScanned(decodedText){
+async function onQrScanned(
+  decodedText
+){
 
-if(qrProcessing)return;
+  if(qrProcessing){
+    return;
+  }
 
-qrProcessing=true;
 
-const code=
-String(decodedText||"")
-.trim()
-.toUpperCase();
+  qrProcessing = true;
 
-if(!code){
 
-qrProcessing=false;
-return;
+  /* -----------------------------------------------
+     อ่าน Code
+  ------------------------------------------------ */
 
-}
+  const code =
+    String(
+      decodedText || ""
+    )
+    .trim()
+    .toUpperCase();
 
-document
-.getElementById("visitorCode")
-.value=code;
 
-document
-.getElementById("scanStatus")
-.innerText=
-"✅ สแกนสำเร็จ\n"+code;
+  if(!code){
 
-await stopScanner();
+    qrProcessing = false;
 
-/*
-ค้นหา Visitor ทันที
-*/
+    return;
 
-searchVisitor();
+  }
 
-setTimeout(function(){
 
-qrProcessing=false;
+  console.log(
+    "QR SCANNED:",
+    code
+  );
 
-},1500);
+
+  scannedCode =
+    code;
+
+
+  /* -----------------------------------------------
+     แสดง Code
+  ------------------------------------------------ */
+
+  document
+    .getElementById(
+      "resultCode"
+    )
+    .innerText =
+      code;
+
+
+  document
+    .getElementById(
+      "resultCard"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "scanStatus"
+    )
+    .innerText =
+      "✅ สแกนสำเร็จ\n\n" +
+      code +
+      "\n\nกำลังส่งกลับหน้า รปภ....";
+
+
+  showSuccess(
+    "สแกน QR สำเร็จ\n" +
+    code
+  );
+
+
+  /* -----------------------------------------------
+     หยุดกล้อง
+  ------------------------------------------------ */
+
+  await stopScanner();
+
+
+  /* -----------------------------------------------
+     ส่งกลับอัตโนมัติ
+  ------------------------------------------------ */
+
+  setTimeout(
+    function(){
+
+      sendBackToSecurity();
+
+    },
+    800
+  );
 
 }
 
@@ -797,497 +817,229 @@ STOP SCANNER
 
 async function stopScanner(){
 
-if(html5QrCode){
+  if(html5QrCode){
 
-try{
+    try{
 
-if(scannerRunning){
+      if(scannerRunning){
 
-await html5QrCode.stop();
+        await html5QrCode.stop();
 
-}
+      }
 
-}catch(e){
+    }
+    catch(error){
 
-console.log(e);
+      console.log(
+        "Stop scanner:",
+        error
+      );
 
-}
-
-try{
-
-html5QrCode.clear();
-
-}catch(e){}
-
-}
-
-html5QrCode=null;
-scannerRunning=false;
-
-document
-.getElementById("startScanBtn")
-.classList.remove("hidden");
-
-document
-.getElementById("stopScanBtn")
-.classList.add("hidden");
-
-}
+    }
 
 
-/* ======================================================
-SEARCH VISITOR
-====================================================== */
+    try{
 
-function searchVisitor(){
+      html5QrCode.clear();
 
-hideMessages();
+    }
+    catch(error){}
 
-checkedVisitor=false;
+  }
 
-const code=
-document
-.getElementById("visitorCode")
-.value
-.trim()
-.toUpperCase();
 
-if(!code){
+  html5QrCode = null;
 
-showError(
-"กรุณาสแกน QR หรือกรอก Visitor Code ก่อน"
-);
+  scannerRunning = false;
 
-return;
 
-}
+  document
+    .getElementById(
+      "startScanBtn"
+    )
+    .classList.remove(
+      "hidden"
+    );
 
-document
-.getElementById("resultCard")
-.style.display="none";
 
-google.script.run
-
-.withSuccessHandler(function(result){
-
-if(!result || !result.found){
-
-currentVisitor=null;
-
-showError(
-result && result.message
-? result.message
-:"ไม่พบ Visitor Code นี้"
-);
-
-return;
-
-}
-
-currentVisitor=result;
-
-displayVisitor(result);
-
-})
-
-.withFailureHandler(function(error){
-
-showError(
-"เกิดข้อผิดพลาด: "+
-(
-error && error.message
-? error.message
-:error
-)
-);
-
-})
-
-.searchVisitor(code);
+  document
+    .getElementById(
+      "stopScanBtn"
+    )
+    .classList.add(
+      "hidden"
+    );
 
 }
 
 
 /* ======================================================
-DISPLAY
+SEND BACK TO SECURITY PAGE
 ====================================================== */
 
-function displayVisitor(visitor){
+function sendBackToSecurity(){
 
-document
-.getElementById("resultCard")
-.style.display="block";
+  if(!scannedCode){
 
-document
-.getElementById("visitorName")
-.innerText=
-visitor.name||"-";
+    showError(
+      "❌ ยังไม่มี Visitor Code"
+    );
 
-document
-.getElementById("displayCode")
-.innerText=
-visitor.visitorCode||"-";
+    return;
 
-document
-.getElementById("idNumber")
-.innerText=
-visitor.idNumber||"-";
+  }
 
-document
-.getElementById("phone")
-.innerText=
-visitor.phone||"-";
 
-document
-.getElementById("company")
-.innerText=
-visitor.company||"-";
+  /* -----------------------------------------------
+     อ่าน return URL
+  ------------------------------------------------ */
 
-document
-.getElementById("vehicle")
-.innerText=
-visitor.vehicle||"-";
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-document
-.getElementById("purpose")
-.innerText=
-visitor.purpose||"-";
 
-document
-.getElementById("cruise")
-.innerText=
-visitor.cruise||"-";
+  let returnUrl =
+    params.get("return");
 
-document
-.getElementById("passengers")
-.innerText=
-visitor.passengers||"-";
 
-document
-.getElementById("visitDate")
-.innerText=
-visitor.visitDate||"-";
+  if(!returnUrl){
 
-updateStatus(visitor.status);
+    showError(
+      "❌ ไม่พบ URL หน้า รปภ.\n\n" +
+      "กรุณากลับไปหน้า รปภ. แล้วกด\n" +
+      "📷 สแกน QR Visitor ใหม่"
+    );
+
+    return;
+
+  }
+
+
+  /* -----------------------------------------------
+     Decode return URL
+  ------------------------------------------------ */
+
+  try{
+
+    returnUrl =
+      decodeURIComponent(
+        returnUrl
+      );
+
+  }
+  catch(error){
+
+    console.log(
+      "Decode return URL:",
+      error
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     สร้าง URL
+  ------------------------------------------------ */
+
+  let targetUrl;
+
+
+  try{
+
+    targetUrl =
+      new URL(
+        returnUrl
+      );
+
+  }
+  catch(error){
+
+    showError(
+      "❌ URL หน้า รปภ. ไม่ถูกต้อง"
+    );
+
+    return;
+
+  }
+
+
+  /* -----------------------------------------------
+     ใส่ Visitor Code
+  ------------------------------------------------ */
+
+  targetUrl.searchParams.set(
+    "visitorCode",
+    scannedCode
+  );
+
+
+  /* -----------------------------------------------
+     ส่งกลับ
+  ------------------------------------------------ */
+
+  console.log(
+    "RETURN URL:",
+    targetUrl.toString()
+  );
+
+
+  document
+    .getElementById(
+      "scanStatus"
+    )
+    .innerText =
+      "✅ สแกนสำเร็จ\n\n" +
+      scannedCode +
+      "\n\nกำลังกลับหน้า รปภ....";
+
+
+  setTimeout(
+    function(){
+
+      window.location.href =
+        targetUrl.toString();
+
+    },
+    300
+  );
 
 }
 
 
 /* ======================================================
-STATUS
+SCAN AGAIN
 ====================================================== */
 
-function updateStatus(status){
+function scanAgain(){
 
-const box=
-document.getElementById("status");
+  scannedCode = "";
 
-const checkBtn=
-document.getElementById("checkBtn");
+  qrProcessing = false;
 
-const entryBtn=
-document.getElementById("entryBtn");
 
-const exitBtn=
-document.getElementById("exitBtn");
+  document
+    .getElementById(
+      "resultCard"
+    )
+    .classList.add(
+      "hidden"
+    );
 
-box.innerText=
-status||"ไม่ทราบสถานะ";
 
-/*
-รอเข้าพื้นที่
-*/
+  hideMessages();
 
-if(status==="รอเข้าพื้นที่"){
 
-box.style.background="#fff3cd";
-box.style.color="#856404";
+  document
+    .getElementById(
+      "scanStatus"
+    )
+    .innerText =
+      "กดปุ่มด้านล่างเพื่อเปิดกล้อง";
 
-checkBtn.classList.remove("hidden");
-entryBtn.classList.add("hidden");
-exitBtn.classList.add("hidden");
 
-return;
-
-}
-
-/*
-อยู่ในพื้นที่
-*/
-
-if(status==="อยู่ในพื้นที่"){
-
-box.style.background="#d4edda";
-box.style.color="#155724";
-
-checkBtn.classList.add("hidden");
-entryBtn.classList.add("hidden");
-exitBtn.classList.remove("hidden");
-
-return;
-
-}
-
-/*
-ออกแล้ว
-*/
-
-if(status==="ออกจากพื้นที่"){
-
-box.style.background="#f8d7da";
-box.style.color="#721c24";
-
-checkBtn.classList.add("hidden");
-entryBtn.classList.add("hidden");
-exitBtn.classList.add("hidden");
-
-return;
-
-}
-
-checkBtn.classList.remove("hidden");
-entryBtn.classList.add("hidden");
-exitBtn.classList.add("hidden");
-
-}
-
-
-/* ======================================================
-CHECK
-====================================================== */
-
-function openCheckConfirm(){
-
-if(!currentVisitor){
-
-showError(
-"กรุณาค้นหา Visitor ก่อน"
-);
-
-return;
-
-}
-
-document
-.getElementById("checkModal")
-.style.display="flex";
-
-}
-
-
-function closeCheckConfirm(){
-
-document
-.getElementById("checkModal")
-.style.display="none";
-
-}
-
-
-function confirmCheckAction(){
-
-closeCheckConfirm();
-
-checkedVisitor=true;
-
-document
-.getElementById("checkBtn")
-.classList.add("hidden");
-
-document
-.getElementById("entryBtn")
-.classList.remove("hidden");
-
-showSuccess(
-"✅ ตรวจสอบข้อมูลเรียบร้อยแล้ว\n"+
-"สามารถยืนยันอนุญาติเข้าพื้นที่ได้"
-);
-
-}
-
-
-/* ======================================================
-ENTRY
-====================================================== */
-
-function openEntryConfirm(){
-
-if(!currentVisitor){
-
-showError(
-"กรุณาค้นหา Visitor ก่อน"
-);
-
-return;
-
-}
-
-if(!checkedVisitor){
-
-showError(
-"กรุณาตรวจสอบข้อมูล Visitor ก่อน"
-);
-
-return;
-
-}
-
-document
-.getElementById("entryModal")
-.style.display="flex";
-
-}
-
-
-function closeEntryConfirm(){
-
-document
-.getElementById("entryModal")
-.style.display="none";
-
-}
-
-
-function confirmEntryAction(){
-
-if(!currentVisitor)return;
-
-const code=
-currentVisitor.visitorCode;
-
-google.script.run
-
-.withSuccessHandler(function(result){
-
-closeEntryConfirm();
-
-if(result && result.success){
-
-currentVisitor.status=
-"อยู่ในพื้นที่";
-
-checkedVisitor=false;
-
-updateStatus("อยู่ในพื้นที่");
-
-showSuccess(
-result.message||
-"✅ อนุญาติเข้าพื้นที่เรียบร้อยแล้ว"
-);
-
-}
-
-else{
-
-showError(
-result && result.message
-?result.message
-:"ไม่สามารถบันทึกการเข้าได้"
-);
-
-}
-
-})
-
-.withFailureHandler(function(error){
-
-closeEntryConfirm();
-
-showError(
-"เกิดข้อผิดพลาด: "+
-(
-error && error.message
-?error.message
-:error
-)
-);
-
-})
-
-.confirmEntry(code);
-
-}
-
-
-/* ======================================================
-EXIT
-====================================================== */
-
-function openExitConfirm(){
-
-if(!currentVisitor)return;
-
-document
-.getElementById("exitModal")
-.style.display="flex";
-
-}
-
-
-function closeExitConfirm(){
-
-document
-.getElementById("exitModal")
-.style.display="none";
-
-}
-
-
-function confirmExitAction(){
-
-if(!currentVisitor)return;
-
-const code=
-currentVisitor.visitorCode;
-
-google.script.run
-
-.withSuccessHandler(function(result){
-
-closeExitConfirm();
-
-if(result && result.success){
-
-currentVisitor.status=
-"ออกจากพื้นที่";
-
-updateStatus("ออกจากพื้นที่");
-
-showSuccess(
-result.message||
-"🔴 บันทึกออกจากพื้นที่เรียบร้อยแล้ว"
-);
-
-}
-
-else{
-
-showError(
-result && result.message
-?result.message
-:"ไม่สามารถบันทึกการออกได้"
-);
-
-}
-
-})
-
-.withFailureHandler(function(error){
-
-closeExitConfirm();
-
-showError(
-"เกิดข้อผิดพลาด: "+
-(
-error && error.message
-?error.message
-:error
-)
-);
-
-})
-
-.confirmExit(code);
+  startScanner();
 
 }
 
@@ -1296,119 +1048,76 @@ error && error.message
 MESSAGES
 ====================================================== */
 
-function showError(message){
+function showSuccess(message){
 
-const box=
-document.getElementById("errorBox");
+  const box =
+    document.getElementById(
+      "successBox"
+    );
 
-box.innerText=message;
 
-box.style.display="block";
+  box.innerText =
+    message;
 
-document
-.getElementById("successBox")
-.style.display="none";
+
+  box.style.display =
+    "block";
+
+
+  document
+    .getElementById(
+      "errorBox"
+    )
+    .style.display =
+      "none";
 
 }
 
 
-function showSuccess(message){
+function showError(message){
 
-const box=
-document.getElementById("successBox");
+  const box =
+    document.getElementById(
+      "errorBox"
+    );
 
-box.innerText=message;
 
-box.style.display="block";
+  box.innerText =
+    message;
 
-document
-.getElementById("errorBox")
-.style.display="none";
+
+  box.style.display =
+    "block";
+
+
+  document
+    .getElementById(
+      "successBox"
+    )
+    .style.display =
+      "none";
 
 }
 
 
 function hideMessages(){
 
-document
-.getElementById("errorBox")
-.style.display="none";
-
-document
-.getElementById("successBox")
-.style.display="none";
-
-}
+  document
+    .getElementById(
+      "errorBox"
+    )
+    .style.display =
+      "none";
 
 
-/* ======================================================
-ENTER SEARCH
-====================================================== */
-
-document
-.getElementById("visitorCode")
-.addEventListener(
-"keydown",
-function(event){
-
-if(event.key==="Enter"){
-
-event.preventDefault();
-
-searchVisitor();
+  document
+    .getElementById(
+      "successBox"
+    )
+    .style.display =
+      "none";
 
 }
-
-});
-
-
-/* ======================================================
-MODAL BACKGROUND
-====================================================== */
-
-document
-.getElementById("checkModal")
-.addEventListener(
-"click",
-function(event){
-
-if(event.target===this){
-
-closeCheckConfirm();
-
-}
-
-});
-
-
-document
-.getElementById("entryModal")
-.addEventListener(
-"click",
-function(event){
-
-if(event.target===this){
-
-closeEntryConfirm();
-
-}
-
-});
-
-
-document
-.getElementById("exitModal")
-.addEventListener(
-"click",
-function(event){
-
-if(event.target===this){
-
-closeExitConfirm();
-
-}
-
-});
 
 
 /* ======================================================
@@ -1416,20 +1125,28 @@ PAGE EXIT
 ====================================================== */
 
 window.addEventListener(
-"beforeunload",
-function(){
+  "beforeunload",
+  function(){
 
-if(html5QrCode && scannerRunning){
+    if(
+      html5QrCode &&
+      scannerRunning
+    ){
 
-try{
-html5QrCode.stop();
-}catch(e){}
+      try{
 
-}
+        html5QrCode.stop();
 
-});
+      }
+      catch(error){}
+
+    }
+
+  }
+);
 
 </script>
 
 </body>
 </html>
+```
